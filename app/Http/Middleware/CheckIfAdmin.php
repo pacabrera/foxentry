@@ -18,7 +18,6 @@ class CheckIfAdmin
     {
         if(
         Auth::check() == false ||
-        Auth::user()->$role != "DEVELOPER" &&
         Auth::user()->$role != "ADMIN") {
             return redirect('/home');
         }

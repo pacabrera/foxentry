@@ -13,8 +13,10 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    You are logged in!
+ 
+                <div class="links">
+                    <a href="{{ route('manage-users') }}">Users</a>
+                </div>
                 </div>
             </div>
         </div>
