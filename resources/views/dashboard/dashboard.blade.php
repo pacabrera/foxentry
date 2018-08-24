@@ -16,6 +16,8 @@
  
                 <div class="links">
                     <a href="{{ route('manage-users') }}">Users</a>
+        
+                    <a href="{{ route('manage-events') }}">Events</a>
                 </div>
                 </div>
             </div>

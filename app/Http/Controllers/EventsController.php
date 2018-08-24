@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events;
+use App\Http\Requests\EventsRequest;
+use Auth;
 
-class eventssController extends Controller
+class EventsController extends Controller
 {
 	public function __construct()
     {
@@ -12,23 +15,23 @@ class eventssController extends Controller
     }
 
     //Showing data in about table
-     public function manageeventss(Request $request) {
+     public function manageEvents(Request $request) {
 
       $search = $request['search'];
 
         if(request()->has('search')) {
-          $events = events::where(function ($query) {
+          $events = Events::where(function ($query) {
             $query->where('eventName', 'LIKE', '%'.request('search').'%');
           })
-          ->orderBy('eventsDate', 'asc')
+          ->orderBy('eventDateFrom', 'asc')
           ->paginate(10);
         }
 
         else {
-          $events = events
-          ::join('users', 'events.id', '=', 'users.id')
+          $events = Events
+          ::join('users', 'events.userID', '=', 'users.id')
           ->select('users.id', 'users.name', 'events.*')
-          ->orderBy('eventDate', 'asc')
+          ->orderBy('eventDateFrom', 'asc')
           ->paginate(10);
         }
 
@@ -37,67 +40,117 @@ class eventssController extends Controller
 
 
     //Showing the add forms
-     public function addevents(){
+     public function addEvents(){
         return view("dashboard.events.add-events");
     }
 
 	 //Adding to the database
-     public function addeventsFunc(eventsRequest $request){
+     public function addEventsPost(EventsRequest $request){
 
-            $events = new events();
-            $events->id = Auth::user()->id;
-            $events->heading = $request['heading'];
-            $events->caption = $request['caption'];
-            $events->phoneNo = $request['phoneNo'];
-            $events->address = $request['address'];
+              //Handles the file upload
+        $file = $request->file('eventPhoto');
+        $file = $request->photo;
+        if($request->hasFile('eventPhoto')) {
+          //Get filename with the extension
+          $filenameWithExt = $request->file('eventPhoto')->getClientOriginalName();
+          //Get just filename
+          $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+          //Get just ext
+          $extension = $request->file('eventPhoto')->getClientOriginalExtension();
+          //Filename to store
+          $fileNameToStore = $filename.'_'.time().'.'.$extension;
+          //Upload the image
+          $path = $request->file('eventPhoto')->storeAs('/public/assets/img/events/', $fileNameToStore);
+        }
+
+        else {
+          $fileNameToStore = 'no_image.png';
+        }
+
+            $events = new Events();
+            $events->userID = Auth::user()->id;
+            $events->eventName = $request['eventName'];
+            $events->eventDateFrom = $request['eventDateFrom'];
+
+        if(empty($request['eventDateTo'])){
+            $events->eventDateTo = $request['eventDateFrom'];
+        }
+        else{
+            $events->eventDateTo = $request['eventDateTo'];
+        }
+            $events->eventVenue = $request['eventVenue'];
+            $events->eventTime = $request['eventTime'];
+            $events->eventPhoto = $fileNameToStore;
+            $events->eventFee = $request['eventFee'];            
             $events->save();
 
-            swal()->success('Successfully Added',[]);
+            //swal()->success('Successfully Added',[]);
             return redirect()->route('manage-events');
     }
 
  	//Function for edit view
-     public function editevents(Request $request, $eventsID){
+     public function editEvents(Request $request, $id){
 
-        $events = events::find($eventsID);
+        $events = Events::find($id);
         return view("dashboard.events.edit-events", compact('events'));
     }
 
     //Function edit about
-     public function editeventsPost(Request $request, $eventsID)
+     public function editEventsPost(EventsRequest $request, $eventsID)
     {
-	       $request->validate([
-	          'heading' => 'required|string|max:225',
-	          'caption' => 'required|string',
-	          'phoneNo' => 'required|string|max:225',
-	          'address' => 'required|string|max:225',
-	       
-	        ]);
+	        $events = Events::find($eventsID);
 
-	        $events = events::find($eventsID);
+	               //Handles the file upload
+        $file = $request->file('eventPhoto');
+        $file = $request->photo;
+        if($request->hasFile('eventPhoto')) {
+          //Get filename with the extension
+          $filenameWithExt = $request->file('eventPhoto')->getClientOriginalName();
+          //Get just filename
+          $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+          //Get just ext
+          $extension = $request->file('eventPhoto')->getClientOriginalExtension();
+          //Filename to store
+          $fileNameToStore = $filename.'_'.time().'.'.$extension;
+          //Upload the image
+          $path = $request->file('eventPhoto')->storeAs('/public/assets/img/events/', $fileNameToStore);
+        }
 
-	        if($events) {
-	 			$events->heading = $request['heading'];
-	            $events->caption = $request['caption'];
-	            $events->phoneNo = $request['phoneNo'];
-	            $events->address = $request['address'];
-	            
-		        $events->save();
+        else {
+          $fileNameToStore = 'no_image.png';
+        }
 
-          swal()->success('Successfully Edited',[]);
+            $events->userID = Auth::user()->id;
+            $events->eventName = $request['eventName'];
+            $events->eventDateFrom = $request['eventDateFrom'];
+        
+        if(empty($request['eventDateTo'])){
+            $events->eventDateTo = $request['eventDateFrom'];
+        }
+        else{
+            $events->eventDateTo = $request['eventDateTo'];
+        }
+            $events->eventVenue = $request['eventVenue'];
+            $events->eventTime = $request['eventTime'];
+            $events->eventPhoto = $fileNameToStore;
+            $events->eventFee = $request['eventFee'];            
+            $events->save();
+
+         // swal()->success('Successfully Edited',[]);
 	        return back();
 	    }
 
-}
+
 
     //Function for delete
-    public function deleteevents(Request $request, $eventsID){
+    public function deleteEvents(Request $request, $id){
 
-        $events = events::find($eventsID);
+        $events = Events::find($id);
         if($events) {
           $events->delete();
 
-         swal()->success('Successfully Deleted',[]);
+          return back()->with('success', 'Successfully deleted!');
+        // swal()->success('Successfully Deleted',[]);
         }
 
         else {
@@ -106,4 +159,5 @@ class eventssController extends Controller
 
         return redirect()->route('manage-events');
     }
+    
 }

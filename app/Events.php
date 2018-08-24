@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Events extends Model
 {
-    //
+    protected $primaryKey = 'eventId';
+    protected $table = 'events';
 }

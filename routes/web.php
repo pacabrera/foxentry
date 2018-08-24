@@ -44,16 +44,16 @@ Route::post('register', 'Auth\RegisterController@register');
 //All of the routes here will be having /manage-events/"route name"
 Route::prefix('/manage-events')->group(function(){
 //Route for viewing Event
-Route::get('/', 'EventsController@manageEvent')->name('manage-event');
+Route::get('/', 'EventsController@manageEvents')->name('manage-events');
 //Route for adding Event
-Route::get('/add-event', 'EventsController@addEvent')->name('add-event');
-Route::post('/add-event', 'EventsController@addEventFunc');
+Route::get('/add-event', 'EventsController@addEvents')->name('add-event');
+Route::post('/add-event', 'EventsController@addEventsPost');
 //Route for Delete Event Function
-Route::post('/delete/{id}', 'EventsController@deleteEvent')->name('delete-event');
+Route::post('/delete/{id}', 'EventsController@deleteEvents')->name('delete-event');
 //Route for Edit Event View
-Route::get('/edit/{id}', 'EventsController@editEvent')->name('edit-event');
+Route::get('/edit/{id}', 'EventsController@editEvents')->name('edit-event');
 //Route edit Event function
-Route::post('/edit/{id}', 'EventsController@editEventPost')->name('edit-event-post');
+Route::post('/edit/{id}', 'EventsController@editEventsPost')->name('edit-event-post');
 
 }); // closing events
 
