@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Softon\SweetAlert\Facades\SWAL;  
+
 
 class UsersController extends Controller
 {
@@ -59,7 +61,8 @@ class UsersController extends Controller
 	            $user->studno = $request['studno'];
 	            
 		        $user->save();
-	        return redirect()->route('manage-users')->with('success', 'Successfully Edited');
+           swal()->success('Successfully Edited'," Edit",[]);
+	        return redirect()->route('manage-users');
 	    }
 
 }
@@ -67,15 +70,9 @@ class UsersController extends Controller
 //Function for delete user
     public function deleteUser(Request $request, $id)
     {
-        $user = User::find($id);
-        if($user) {
-          $user->delete();
-          swal()->success('Successfully Deleted',[]);
-          return back();
-        }
-        else {
-          return back()->with('error', 'Error.');
-        }
+        user::find($id)->delete();
+        swal()->success('Successfully Deleted'," News is successfully deleted",[]);
+        return redirect()->route('manage-users');
     }
 
 

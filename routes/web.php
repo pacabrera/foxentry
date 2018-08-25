@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'StatusController@viewStatus')->name('home');
 Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
 
 //All of the routes here will be having /dashboard/"route name"
@@ -56,5 +56,21 @@ Route::get('/edit/{id}', 'EventsController@editEvents')->name('edit-event');
 Route::post('/edit/{id}', 'EventsController@editEventsPost')->name('edit-event-post');
 
 }); // closing events
+
+//All of the routes here will be having /manage-status/"route name"
+Route::prefix('/manage-status')->group(function(){
+//Route for viewing status
+Route::get('/', 'StatusController@manageEvent')->name('manage-status');
+//Route for adding status
+Route::post('/add-status', 'StatusController@addStatus')->name('add-status');
+//Route for Delete status Function
+Route::post('/delete/{id}', 'StatusController@deleteStatus')->name('delete-status');
+//Route for Edit status View
+Route::get('/edit/{id}', 'StatusController@editStatus')->name('edit-status');
+//Route edit status function
+Route::post('/edit/{id}', 'StatusController@editStatusPost')->name('edit-status-post');
+//Route for View status View
+Route::post('/add-comment/{id}', 'CommentsController@addComment')->name('add-comment');
+}); // closing [post]
 
 }); // closing dashboard
