@@ -19,6 +19,10 @@ Auth::routes();
 
 Route::get('/home', 'StatusController@viewStatus')->name('home');
 Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
+Route::get('/events', 'HomeController@showEvents')->name('events');
+
+//Route for register in events
+Route::post('/events/register-event/{id}', 'EventsController@registerEvent')->name('register-event');
 
 //All of the routes here will be having /dashboard/"route name"
 Route::prefix('/dashboard')->group(function(){

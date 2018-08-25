@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Events;
+use App\Participants;
 use App\Http\Requests\EventsRequest;
 use Auth;
 
@@ -11,7 +12,9 @@ class EventsController extends Controller
 {
 	public function __construct()
     {
-        $this->middleware('CheckIfAdmin:role');
+        $this->middleware('CheckIfAdmin:role', ['only' => ['manageEvents','addEvents','addEventsPost','editEvents','editEventsPost', 'deleteEvents'] ]);
+
+        $this->middleware('auth');
     }
 
     //Showing data in about table
@@ -158,6 +161,45 @@ class EventsController extends Controller
         }
 
         return redirect()->route('manage-events');
+    }
+
+
+      public function showParticipants(Request $request) {
+
+            $search = $request['search'];
+
+              if(request()->has('search')) {
+                $events = Events::where(function ($query) {
+                  $query->where('eventName', 'LIKE', '%'.request('search').'%');
+                })
+                ->orderBy('eventDateFrom', 'asc')
+                ->paginate(10);
+              }
+
+              else {
+                $events = Events
+                ::join('users', 'events.userID', '=', 'users.id')
+                ->select('users.id', 'users.name', 'events.*')
+                ->orderBy('eventDateFrom', 'asc')
+                ->paginate(10);
+              }
+
+              return view("dashboard.events.manage-events", compact('events', 'search'));
+          }
+
+
+    //Function for register (Student)
+     public function registerEvent(Request $request, $id){
+
+       $user = Auth::user()->id;
+
+            $participants = new Participants();
+            $participants->event_id = $id;
+            $participants->user_id = $user;
+            $participants->save();
+
+            //swal()->success('Successfully Added',[]);
+             return back();
     }
     
 }

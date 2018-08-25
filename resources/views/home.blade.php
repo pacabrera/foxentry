@@ -4,6 +4,10 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+          <div class="links">
+                    <a href="{{ route('home') }}">Home</a>
+                    <a href="{{ route('events') }}">Events</a>
+                </div>  <br>
             <div class="card">
                 <div class="card-header">Student Dashboard</div>
 

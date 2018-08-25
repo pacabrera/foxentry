@@ -51,7 +51,7 @@
     <td>{{ $user->studno }}</td>
     <td>{{ $user->role }}</td>
     <td><a href="{{ route('edit-user', $user->id) }}" class="btn btn-info">EDIT</a></td>
-    <td><input type="submit" class="btn btn-danger" value="DELETE"></td>
+    <td><input type="submit" onclick="confirmDeleteFunction()" class="btn btn-danger" value="DELETE"></td>
   </tr>
 </form>
 @endforeach

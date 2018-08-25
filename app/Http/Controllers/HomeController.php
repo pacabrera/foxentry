@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Events;
 use Auth;
 
 class HomeController extends Controller
@@ -28,4 +29,30 @@ class HomeController extends Controller
         return view('home');
     }
 
+    //Showing of Events (Student)
+     public function showEvents(Request $request) {
+
+      $search = $request['search'];
+
+        if(request()->has('search')) {
+          $events = Events::where(function ($query) {
+            $query->where('eventName', 'LIKE', '%'.request('search').'%');
+          })
+          ->orderBy('eventDateFrom', 'asc')
+          ->paginate(10);
+        }
+
+        else {
+          $events = Events
+          ::join('users', 'events.userID', '=', 'users.id')
+          ->select('users.id', 'users.name', 'events.*')
+          ->orderBy('eventDateFrom', 'asc')
+          ->paginate(10);
+        }
+
+        return view("events.index", compact('events', 'search'));
+    }
+
+
+    
 }
