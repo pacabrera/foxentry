@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\status;
 use App\comment;
 use Auth;
+use App\User;
 
 class StatusController extends Controller
 {
@@ -20,17 +21,31 @@ class StatusController extends Controller
             $status = new status();
             $status->uid = Auth::user()->id;
             $status->posts = $request['posts'];
-           
+            
             $status->save();
             return back();
     }
     public function viewStatus(){
-    	$status = status::join('users', 'statuses.uid', '=', 'users.id')->get();
+    	$status = status::join('users', 'statuses.uid', '=', 'users.id')
+        //->join('comments','comments.statusId','statuses.statusId')
+        ->get();
+    	return view('home', compact('status','posts'));
+    }
 
-    	$comments = comment::join('users', 'comments.uid', '=', 'users.id')
-    	->join('statuses', 'statuses.statusId', '=', 'comments.pid')
-    	->where('comments.pid','statuses.statusId')
-    	->get();
-    	return view('home', compact('status','comments'));
+    public function deleteStatus(Request $request, $id){
+
+        $status = status::find($id);
+        if($status) {
+          $status->delete();
+
+          return back()->with('success', 'Successfully deleted!');
+        // swal()->success('Successfully Deleted',[]);
+        }
+
+        else {
+          return back()->with('error', 'Error.');
+        }
+
+        return redirect()->route('home');
     }
 }

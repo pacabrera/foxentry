@@ -41,13 +41,12 @@
 <hr>
                     
                     @foreach($status as $data)
+                    <form action="{{ route('delete-status', $data->statusId) }}" method="POST" name="myForm">
+                        @csrf
                     <strong>{{ $data->name }}</strong>
-                    <p>{{ $data->statusId }}{{ $data->posts }}</p>
-
-                    @foreach($comments as $comment)
-                    <strong>{{ $comment->name }}</strong>
-                    <p>{{ $comment->pid }} {{ $comment->comment }}</p>
-                    @endforeach
+                    <p>{{ $data->statusId }}{{ $data->posts }}{{ $data->comment }}</p>
+                    <button class="btn btn-danger">x</button>
+                    </form>
                     <form method="POST" action="{{ route('add-comment', $data->statusId) }}" aria-label="{{ __('Register') }}">
                         @csrf
                         <div class="form-group row">

@@ -18,7 +18,7 @@ class CommentsController extends Controller
 
             $comments = new comment();
             $comments->uid = Auth::user()->id;
-            $comments->pid = $id;
+            $comments->statusId = $id;
             $comments->comment = $request['comment'];
            
             $comments->save();

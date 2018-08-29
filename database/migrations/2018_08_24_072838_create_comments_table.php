@@ -17,8 +17,8 @@ class CreateCommentsTable extends Migration
             $table->increments('cid');
             $table->unsignedInteger('uid');
             $table->foreign('uid')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedInteger('pid');
-            $table->foreign('pid')->references('statusId')->on('statuses')->onDelete('cascade');
+            $table->unsignedInteger('statusId');
+            $table->foreign('statusId')->references('statusId')->on('statuses')->onDelete('cascade');
             $table->string('comment');
             $table->timestamps();
         });
