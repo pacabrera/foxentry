@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 
@@ -28,4 +29,18 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function posts()
+    {
+        return $this->hasMany(Post::Class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::Class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::Class);
+    }
 }

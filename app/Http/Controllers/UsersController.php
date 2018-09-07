@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Softon\SweetAlert\Facades\SWAL;  
-
+use Hash;
 
 class UsersController extends Controller
 {
@@ -57,7 +57,7 @@ class UsersController extends Controller
 	        if($user) {
 	 			$user->name = $request['name'];
 	            $user->email = $request['email'];
-	            $user->password = $request['password'];
+	            $user->password = Hash::make($request['password']);
 	            $user->studno = $request['studno'];
 	            
 		        $user->save();
@@ -75,6 +75,10 @@ class UsersController extends Controller
         return redirect()->route('manage-users');
     }
 
+   public function getAccount()
+   {
+      return view('account', ['user' => Auth::user()]);
+   }
 
 }
 

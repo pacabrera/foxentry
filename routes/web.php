@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'StatusController@viewStatus')->name('home');
+Route::get('/home', 'PostsController@home')->name('home');
 Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
 Route::get('/events', 'HomeController@showEvents')->name('events');
 
@@ -62,19 +62,62 @@ Route::post('/edit/{id}', 'EventsController@editEventsPost')->name('edit-event-p
 }); // closing events
 
 //All of the routes here will be having /manage-status/"route name"
-Route::prefix('/manage-status')->group(function(){
-//Route for viewing status
-Route::get('/', 'StatusController@manageEvent')->name('manage-status');
-//Route for adding status
-Route::post('/add-status', 'StatusController@addStatus')->name('add-status');
-//Route for Delete status Function
-Route::post('/delete/{id}', 'StatusController@deleteStatus')->name('delete-status');
-//Route for Edit status View
-Route::get('/edit/{id}', 'StatusController@editStatus')->name('edit-status');
-//Route edit status function
-Route::post('/edit/{id}', 'StatusController@editStatusPost')->name('edit-status-post');
-//Route for View status View
-Route::post('/add-comment/{id}', 'CommentsController@addComment')->name('add-comment');
-}); // closing [post]
+
 
 }); // closing dashboard
+
+Route::post('/createpost', 'PostsController@postCreatePost')->name('post.create');
+Route::get('/delete-post/{post_id}', 'PostsController@getDeletePost')->name('post.delete');
+
+Route::post('/edit', [
+    'uses' => 'PostsController@postEditPost',
+    'as' => 'edit',
+    'middleware' => 'auth'
+]);
+
+Route::post('/like/{id}', [
+    'uses' => 'PostsController@postLikePost',
+    'as' => 'like',
+    'middleware' => 'auth'
+]);
+
+Route::post('/createcomment', [
+   'uses' => 'PostsController@postCreateComment',
+   'as' => 'comment.create',
+   'middleware' => 'auth'
+]);
+
+Route::get('/postimage/{filename}', [
+    'uses' => 'PostsController@getPostImage',
+    'as' => 'post.image',
+    'middleware' => 'auth'
+]);
+
+Route::get('/users/{user_id}', [
+  'uses' => 'PostsController@getUserPage',
+  'as' => 'userpage',
+  'middleware' => 'auth'
+]);
+
+Route::get('/delete-post/{post_id}', [
+    'uses' => 'PostsController@getDeletePost',
+    'as' => 'post.delete',
+    'middleware' => 'auth'
+]);
+
+Route::post('/edit', [
+    'uses' => 'PostsController@postEditPost',
+    'as' => 'edit',
+    'middleware' => 'auth'
+]);
+
+//All of the routes here will be having /manage-events/"route name"
+Route::prefix('/manage-profile')->group(function(){
+//Route for viewing Event
+Route::get('/', 'ProfileController@manageEvents')->name('manage-events');
+//Route for Edit Event View
+Route::get('/edit/{id}', 'ProfileController@editProfile')->name('edit-profile');
+//Route edit Event function
+Route::post('/edit/{id}', 'ProfileController@editProfilePost')->name('edit-profile-post');
+
+}); // closing events

@@ -10,9 +10,14 @@ class Comment extends Model
 {
     protected $primaryKey = 'cid';
  	protected $table = 'comments';
+ 	
+   public function user()
+   {
+      return $this->belongsTo(User::Class);
+   }
 
-    public function status(){
-        return $this->belongsTo('Status::class', 'statusId');
-    }
-
+   public function post()
+   {
+      return $this->belongsTo(Post::Class);
+   }
 }

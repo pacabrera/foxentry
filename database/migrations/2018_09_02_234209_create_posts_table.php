@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStatusesTable extends Migration
+class CreatePostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('statuses', function (Blueprint $table) {
-            $table->increments('statusId');
-            $table->unsignedInteger('uid');
-            $table->foreign('uid')->references('id')->on('users')->onDelete('cascade');
-            $table->string('posts');
+        Schema::create('posts', function (Blueprint $table) {
+            $table->increments('id');
             $table->timestamps();
+            $table->text('body');
+            $table->string('post_image');
+            $table->integer('user_id');
         });
     }
 
@@ -29,6 +29,6 @@ class CreateStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('statuses');
+        Schema::dropIfExists('posts');
     }
 }
